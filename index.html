@@ -4,12 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anas & Saad Food Ratings</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #ff7e5f;
+            --secondary: #feb47b;
+            --dark: #333;
+            --light: #f8f9fa;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --info: #17a2b8;
         }
 
         body {
@@ -20,16 +32,16 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
-            background-color: rgba(255, 255, 255, 0.95);
+            background-color: rgba(255, 255, 255, 0.97);
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             overflow: hidden;
         }
 
         header {
-            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            background: linear-gradient(to right, var(--primary), var(--secondary));
             color: white;
             text-align: center;
             padding: 30px 20px;
@@ -63,7 +75,7 @@
 
         .login-form h2 {
             margin-bottom: 20px;
-            color: #333;
+            color: var(--dark);
         }
 
         .form-group {
@@ -78,7 +90,7 @@
             color: #555;
         }
 
-        input {
+        input, select {
             width: 100%;
             padding: 12px;
             border: 2px solid #ddd;
@@ -87,13 +99,13 @@
             transition: border-color 0.3s;
         }
 
-        input:focus {
-            border-color: #ff7e5f;
+        input:focus, select:focus {
+            border-color: var(--primary);
             outline: none;
         }
 
         button {
-            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            background: linear-gradient(to right, var(--primary), var(--secondary));
             color: white;
             border: none;
             padding: 12px 25px;
@@ -110,8 +122,27 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
+        button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: var(--info);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+        }
+
+        .btn-success {
+            background: var(--success);
+        }
+
         .error-message {
-            color: #e74c3c;
+            color: var(--danger);
             margin-top: 10px;
             font-weight: 500;
             display: none;
@@ -128,7 +159,7 @@
             align-items: center;
             margin-bottom: 20px;
             padding: 15px;
-            background: #f8f9fa;
+            background: var(--light);
             border-radius: 10px;
         }
 
@@ -137,16 +168,11 @@
             color: #555;
         }
 
-        .logout-btn {
-            background: #e74c3c;
-            width: auto;
-            padding: 8px 15px;
-        }
-
         .tabs {
             display: flex;
             margin-bottom: 20px;
             border-bottom: 2px solid #eee;
+            flex-wrap: wrap;
         }
 
         .tab {
@@ -158,8 +184,8 @@
         }
 
         .tab.active {
-            color: #ff7e5f;
-            border-bottom: 3px solid #ff7e5f;
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
         }
 
         .tab-content {
@@ -171,7 +197,7 @@
         }
 
         .add-food-form {
-            background: #f8f9fa;
+            background: var(--light);
             padding: 20px;
             border-radius: 10px;
             margin-bottom: 30px;
@@ -211,7 +237,7 @@
         }
 
         .star.active {
-            color: #ffc107;
+            color: var(--warning);
         }
 
         .food-list {
@@ -236,7 +262,7 @@
 
         .food-info h3 {
             margin-bottom: 5px;
-            color: #333;
+            color: var(--dark);
         }
 
         .food-info p {
@@ -253,7 +279,7 @@
         .rating-value {
             font-size: 18px;
             font-weight: 600;
-            color: #ff7e5f;
+            color: var(--primary);
         }
 
         .tier-list {
@@ -280,7 +306,7 @@
         }
 
         .tier-A {
-            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            background: linear-gradient(to right, var(--primary), var(--secondary));
         }
 
         .tier-B {
@@ -293,7 +319,7 @@
 
         .tier-D {
             background: linear-gradient(to right, #a8edea, #fed6e3);
-            color: #333;
+            color: var(--dark);
         }
 
         .tier-items {
@@ -305,11 +331,48 @@
         }
 
         .tier-item {
-            background: #f8f9fa;
+            background: var(--light);
             padding: 10px;
             border-radius: 8px;
             text-align: center;
             font-weight: 500;
+        }
+
+        .sync-section {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .sync-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .sync-buttons button {
+            flex: 1;
+        }
+
+        .instructions {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e8f4fd;
+            border-radius: 8px;
+        }
+
+        .instructions h3 {
+            margin-bottom: 10px;
+            color: var(--info);
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
         }
 
         footer {
@@ -321,7 +384,46 @@
             border-top: 1px solid #eee;
         }
 
-        @media (max-width: 600px) {
+        .delete-btn {
+            background: var(--danger);
+            width: auto;
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            margin: 0 10px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #777;
+        }
+
+        @media (max-width: 768px) {
             .form-row {
                 flex-direction: column;
                 gap: 15px;
@@ -333,16 +435,51 @@
                 text-align: center;
             }
             
-            .logout-btn {
-                width: 100%;
+            .sync-buttons {
+                flex-direction: column;
             }
+            
+            .stats {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .stat-card {
+                margin: 5px 0;
+            }
+            
+            .food-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .food-rating {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background: var(--success);
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
         }
     </style>
 </head>
 <body>
+    <div class="notification" id="notification"></div>
+    
     <div class="container">
         <header>
-            <h1>Anas & Saad Food Ratings</h1>
+            <h1><i class="fas fa-utensils"></i> Anas & Saad Food Ratings</h1>
             <p class="subtitle">Ranking our favorite foods from our hangouts</p>
         </header>
 
@@ -351,7 +488,11 @@
                 <h2>Login to Food Ratings</h2>
                 <div class="form-group">
                     <label for="username">Username</label>
-                    <input type="text" id="username" placeholder="Enter your username">
+                    <select id="username">
+                        <option value="">Select your name</option>
+                        <option value="anas">Anas</option>
+                        <option value="saad">Saad</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
@@ -365,13 +506,32 @@
         <div class="app-container" id="appContainer">
             <div class="user-info">
                 <span>Welcome, <span id="currentUser">User</span>!</span>
-                <button class="logout-btn" id="logoutBtn">Logout</button>
+                <div class="action-buttons">
+                    <button class="btn-secondary" id="syncBtn"><i class="fas fa-sync-alt"></i> Sync Data</button>
+                    <button class="btn-danger" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                </div>
+            </div>
+
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalFoods">0</div>
+                    <div class="stat-label">Total Foods</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="avgRating">0</div>
+                    <div class="stat-label">Average Rating</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="topTier">0</div>
+                    <div class="stat-label">S-Tier Foods</div>
+                </div>
             </div>
 
             <div class="tabs">
-                <div class="tab active" data-tab="add">Add Food</div>
-                <div class="tab" data-tab="list">Food List</div>
-                <div class="tab" data-tab="tier">Tier List</div>
+                <div class="tab active" data-tab="add"><i class="fas fa-plus-circle"></i> Add Food</div>
+                <div class="tab" data-tab="list"><i class="fas fa-list"></i> Food List</div>
+                <div class="tab" data-tab="tier"><i class="fas fa-trophy"></i> Tier List</div>
+                <div class="tab" data-tab="sync"><i class="fas fa-cloud"></i> Sync Data</div>
             </div>
 
             <div class="tab-content active" id="addTab">
@@ -409,7 +569,7 @@
                         <label for="notes">Notes (Optional)</label>
                         <input type="text" id="notes" placeholder="Any comments about this food?">
                     </div>
-                    <button id="addFoodBtn">Add Food</button>
+                    <button id="addFoodBtn"><i class="fas fa-plus"></i> Add Food</button>
                 </div>
             </div>
 
@@ -424,6 +584,30 @@
                 <h2>Food Tier List</h2>
                 <div class="tier-list" id="tierList">
                     <!-- Tier list will be dynamically generated here -->
+                </div>
+            </div>
+
+            <div class="tab-content" id="syncTab">
+                <div class="sync-section">
+                    <h2><i class="fas fa-cloud-upload-alt"></i> Sync Data Between Devices</h2>
+                    <p>Export your food data from one device and import it on another to keep everything synchronized.</p>
+                    
+                    <div class="sync-buttons">
+                        <button class="btn-success" id="exportBtn"><i class="fas fa-file-export"></i> Export Data</button>
+                        <button class="btn-secondary" id="importBtn"><i class="fas fa-file-import"></i> Import Data</button>
+                    </div>
+                    
+                    <input type="file" id="fileInput" class="file-input" accept=".json" style="display: none;">
+                    
+                    <div class="instructions">
+                        <h3>How to Sync:</h3>
+                        <ol>
+                            <li>On your PC: Click "Export Data" to download a file</li>
+                            <li>Transfer the file to your phone (email, WhatsApp, etc.)</li>
+                            <li>On your phone: Click "Import Data" and select the file</li>
+                            <li>Your foods will now be synced!</li>
+                        </ol>
+                    </div>
                 </div>
             </div>
 
@@ -448,14 +632,50 @@
         const tierList = document.getElementById('tierList');
         const ratingStars = document.querySelectorAll('.star');
         const ratingInput = document.getElementById('rating');
+        const exportBtn = document.getElementById('exportBtn');
+        const importBtn = document.getElementById('importBtn');
+        const fileInput = document.getElementById('fileInput');
+        const syncBtn = document.getElementById('syncBtn');
+        const notification = document.getElementById('notification');
+        const totalFoods = document.getElementById('totalFoods');
+        const avgRating = document.getElementById('avgRating');
+        const topTier = document.getElementById('topTier');
 
         // Application state
         let foods = JSON.parse(localStorage.getItem('anasSaadFoods')) || [];
         let currentRating = 5;
 
+        // Show notification
+        function showNotification(message, type = 'success') {
+            notification.textContent = message;
+            notification.style.background = type === 'success' ? 'var(--success)' : 'var(--danger)';
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // Update stats
+        function updateStats() {
+            totalFoods.textContent = foods.length;
+            
+            if (foods.length > 0) {
+                const totalRating = foods.reduce((sum, food) => sum + food.rating, 0);
+                const average = (totalRating / foods.length).toFixed(1);
+                avgRating.textContent = average;
+                
+                const sTierCount = foods.filter(food => food.rating >= 9).length;
+                topTier.textContent = sTierCount;
+            } else {
+                avgRating.textContent = '0';
+                topTier.textContent = '0';
+            }
+        }
+
         // Login functionality
         loginBtn.addEventListener('click', () => {
-            const username = document.getElementById('username').value.trim();
+            const username = document.getElementById('username').value;
             const password = document.getElementById('password').value.trim();
             
             if ((username === 'anas' || username === 'saad') && password === 'anassaadfood') {
@@ -464,6 +684,8 @@
                 appContainer.style.display = 'block';
                 renderFoodList();
                 renderTierList();
+                updateStats();
+                showNotification(`Welcome back, ${username}!`);
             } else {
                 errorMessage.style.display = 'block';
             }
@@ -476,6 +698,7 @@
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
             errorMessage.style.display = 'none';
+            showNotification('Logged out successfully');
         });
 
         // Tab switching
@@ -531,7 +754,7 @@
             const notes = document.getElementById('notes').value.trim();
             
             if (!foodName || !restaurant) {
-                alert('Please fill in at least the food name and restaurant.');
+                showNotification('Please fill in at least the food name and restaurant.', 'danger');
                 return;
             }
             
@@ -542,13 +765,18 @@
                 rating: currentRating,
                 notes: notes,
                 addedBy: currentUser.textContent.toLowerCase(),
-                date: new Date().toLocaleDateString()
+                date: new Date().toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'short', 
+                    day: 'numeric' 
+                })
             };
             
             foods.push(newFood);
             saveFoods();
             renderFoodList();
             renderTierList();
+            updateStats();
             
             // Reset form
             document.getElementById('foodName').value = '';
@@ -558,7 +786,7 @@
             ratingInput.value = 5;
             updateStars(5);
             
-            alert('Food added successfully!');
+            showNotification(`${foodName} added successfully!`);
         });
 
         // Save foods to localStorage
@@ -589,7 +817,7 @@
                     </div>
                     <div class="food-rating">
                         <span class="rating-value">${food.rating}/10</span>
-                        <button class="delete-btn" data-id="${food.id}">Delete</button>
+                        <button class="delete-btn" data-id="${food.id}"><i class="fas fa-trash"></i> Delete</button>
                     </div>
                 `;
                 foodList.appendChild(foodItem);
@@ -599,11 +827,15 @@
             document.querySelectorAll('.delete-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const id = parseInt(e.target.getAttribute('data-id'));
-                    if (confirm('Are you sure you want to delete this food?')) {
+                    const food = foods.find(f => f.id === id);
+                    
+                    if (confirm(`Are you sure you want to delete "${food.name}"?`)) {
                         foods = foods.filter(food => food.id !== id);
                         saveFoods();
                         renderFoodList();
                         renderTierList();
+                        updateStats();
+                        showNotification(`${food.name} deleted successfully`);
                     }
                 });
             });
@@ -661,6 +893,73 @@
                 tierList.appendChild(tierElement);
             });
         }
+
+        // Export data functionality
+        exportBtn.addEventListener('click', () => {
+            const dataStr = JSON.stringify(foods, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `anas-saad-foods-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            
+            showNotification('Food data exported successfully!');
+        });
+
+        // Import data functionality
+        importBtn.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                try {
+                    const importedFoods = JSON.parse(event.target.result);
+                    
+                    if (!Array.isArray(importedFoods)) {
+                        throw new Error('Invalid file format');
+                    }
+                    
+                    if (confirm(`This will replace your current ${foods.length} foods with ${importedFoods.length} imported foods. Continue?`)) {
+                        foods = importedFoods;
+                        saveFoods();
+                        renderFoodList();
+                        renderTierList();
+                        updateStats();
+                        showNotification('Food data imported successfully!');
+                    }
+                } catch (error) {
+                    showNotification('Error importing file. Please make sure you selected a valid food data file.', 'danger');
+                    console.error('Import error:', error);
+                }
+            };
+            reader.readAsText(file);
+            fileInput.value = '';
+        });
+
+        // Sync button
+        syncBtn.addEventListener('click', () => {
+            // Switch to sync tab
+            tabs.forEach(t => t.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            document.querySelector('.tab[data-tab="sync"]').classList.add('active');
+            document.getElementById('syncTab').classList.add('active');
+            
+            showNotification('Navigate to the Sync Data tab to export or import your food data');
+        });
+
+        // Initialize
+        updateStars(currentRating);
     </script>
 </body>
 </html>
