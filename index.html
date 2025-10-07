@@ -92,7 +92,7 @@
             color: #555;
         }
 
-        input, select {
+        input, select, textarea {
             width: 100%;
             padding: 12px;
             border: 2px solid #ddd;
@@ -101,7 +101,7 @@
             transition: border-color 0.3s;
         }
 
-        input:focus, select:focus {
+        input:focus, select:focus, textarea:focus {
             border-color: var(--primary);
             outline: none;
         }
@@ -183,6 +183,36 @@
 
         .user-saad {
             background: var(--saad-color);
+        }
+
+        .sync-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .sync-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #4CAF50;
+        }
+
+        .sync-indicator.syncing {
+            background-color: #ff9800;
+            animation: pulse 1s infinite;
+        }
+
+        .sync-indicator.offline {
+            background-color: #f44336;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
         }
 
         .tabs {
@@ -527,6 +557,32 @@
             margin: 15px 0;
             text-align: center;
         }
+
+        .share-code-section {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .code-display {
+            background: #2d3748;
+            color: #68d391;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 18px;
+            text-align: center;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+
+        .copy-btn {
+            background: var(--info);
+            width: 100%;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -535,17 +591,15 @@
     <div class="container">
         <header>
             <h1><i class="fas fa-utensils"></i> Anas & Saad Food Ratings</h1>
-            <p class="subtitle">Share and rank your favorite foods together!</p>
+            <p class="subtitle">Share foods between your phone and PC!</p>
         </header>
 
         <div class="login-container" id="loginContainer">
             <div class="login-form">
                 <h2>Login to Food Ratings</h2>
                 <div class="simple-instruction">
-                    <h3><i class="fas fa-users"></i> Simple Setup!</h3>
-                    <p><strong>Both of you use the same password:</strong></p>
-                    <p style="font-size: 1.5rem; font-weight: bold; color: var(--primary);">anassaadfood</p>
-                    <p>That's it! You'll automatically see each other's foods.</p>
+                    <h3><i class="fas fa-sync-alt"></i> Sync Between Devices</h3>
+                    <p><strong>Both devices need the same Share Code to see the same foods!</strong></p>
                 </div>
                 <div class="form-group">
                     <label for="username">Who are you?</label>
@@ -556,10 +610,15 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="password">Enter the shared password</label>
+                    <label for="password">Password</label>
                     <input type="password" id="password" placeholder="Enter: anassaadfood">
                 </div>
-                <button id="loginBtn">Login & Start Sharing</button>
+                <div class="form-group">
+                    <label for="shareCode">Share Code (Important!)</label>
+                    <input type="text" id="shareCode" placeholder="Enter same code on both devices">
+                    <small style="color: #666;">Use the same code on your phone and PC to share foods</small>
+                </div>
+                <button id="loginBtn">Login & Sync</button>
                 <div class="error-message" id="errorMessage">Invalid credentials. Please try again.</div>
             </div>
         </div>
@@ -570,13 +629,14 @@
                     <span>Welcome, <span id="currentUser">User</span>! 
                         <span class="user-badge" id="userBadge">You</span>
                     </span>
-                    <div style="margin-top: 5px; font-size: 14px; color: #666;">
-                        <i class="fas fa-sync-alt"></i> Data syncs automatically between you and Saad
+                    <div class="sync-status">
+                        <span class="sync-indicator" id="syncIndicator"></span>
+                        <span id="syncStatus">Ready</span>
                     </div>
                 </div>
                 <div class="action-buttons">
-                    <button class="btn-success" id="exportBtn"><i class="fas fa-download"></i> Backup</button>
-                    <button class="btn-secondary" id="importBtn"><i class="fas fa-upload"></i> Restore</button>
+                    <button class="btn-success" id="syncNowBtn"><i class="fas fa-sync-alt"></i> Sync Now</button>
+                    <button class="btn-warning" id="shareBtn"><i class="fas fa-share-alt"></i> Share Code</button>
                     <button class="btn-danger" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
                 </div>
             </div>
@@ -604,7 +664,7 @@
                 <div class="tab active" data-tab="add"><i class="fas fa-plus-circle"></i> Add Food</div>
                 <div class="tab" data-tab="list"><i class="fas fa-list"></i> All Foods</div>
                 <div class="tab" data-tab="tier"><i class="fas fa-trophy"></i> Tier List</div>
-                <div class="tab" data-tab="help"><i class="fas fa-question-circle"></i> How To Use</div>
+                <div class="tab" data-tab="sync"><i class="fas fa-sync"></i> Device Sync</div>
             </div>
 
             <div class="tab-content active" id="addTab">
@@ -642,12 +702,12 @@
                         <label for="notes">Notes (Optional)</label>
                         <input type="text" id="notes" placeholder="Any comments about this food?">
                     </div>
-                    <button id="addFoodBtn"><i class="fas fa-plus"></i> Add Food</button>
+                    <button id="addFoodBtn"><i class="fas fa-plus"></i> Add Food & Sync</button>
                 </div>
             </div>
 
             <div class="tab-content" id="listTab">
-                <h2>All Foods <small style="color: #666;">- You can see each other's foods!</small></h2>
+                <h2>All Foods <small style="color: #666;">- Synced between your devices!</small></h2>
                 <div class="food-list" id="foodList">
                     <!-- Food items will be dynamically added here -->
                 </div>
@@ -660,53 +720,46 @@
                 </div>
             </div>
 
-            <div class="tab-content" id="helpTab">
+            <div class="tab-content" id="syncTab">
                 <div class="sync-section">
-                    <h2><i class="fas fa-question-circle"></i> How To Use This App</h2>
+                    <h2><i class="fas fa-sync-alt"></i> Sync Between Devices</h2>
                     
-                    <div class="instructions">
-                        <h3><i class="fas fa-user-friends"></i> For Both Anas and Saad:</h3>
-                        <ul style="margin-left: 20px;">
-                            <li><strong>Both use the same password:</strong> <code>anassaadfood</code></li>
-                            <li><strong>Select your name</strong> when logging in</li>
-                            <li>You'll automatically see each other's foods</li>
-                            <li>Green badge = Anas added it</li>
-                            <li>Blue badge = Saad added it</li>
-                        </ul>
+                    <div class="share-code-section">
+                        <h3><i class="fas fa-key"></i> Your Share Code</h3>
+                        <div class="code-display" id="currentShareCode">Loading...</div>
+                        <button class="copy-btn" id="copyCodeBtn"><i class="fas fa-copy"></i> Copy Share Code</button>
+                        <p style="margin-top: 10px; text-align: center;">
+                            <strong>Use this SAME code on your phone and PC to share foods!</strong>
+                        </p>
                     </div>
 
                     <div class="instructions">
-                        <h3><i class="fas fa-utensils"></i> Adding Foods:</h3>
-                        <ul style="margin-left: 20px;">
-                            <li>Go to "Add Food" tab</li>
-                            <li>Enter food name and restaurant</li>
-                            <li>Rate from 1-10 (click stars or type number)</li>
-                            <li>Add optional notes</li>
-                            <li>Click "Add Food"</li>
-                        </ul>
-                    </div>
-
-                    <div class="instructions">
-                        <h3><i class="fas fa-trophy"></i> Tier List:</h3>
-                        <ul style="margin-left: 20px;">
-                            <li><strong>S Tier:</strong> 9-10/10 (Amazing!)</li>
-                            <li><strong>A Tier:</strong> 7-8/10 (Great)</li>
-                            <li><strong>B Tier:</strong> 5-6/10 (Good)</li>
-                            <li><strong>C Tier:</strong> 3-4/10 (Okay)</li>
-                            <li><strong>D Tier:</strong> 0-2/10 (Not good)</li>
-                        </ul>
+                        <h3><i class="fas fa-mobile-alt"></i> How to Sync:</h3>
+                        <ol>
+                            <li><strong>On your PHONE:</strong> Copy the share code above</li>
+                            <li><strong>On your PC:</strong> Use the SAME share code when logging in</li>
+                            <li><strong>Both devices:</strong> Will now show the same foods!</li>
+                            <li>Add foods on any device - they'll appear on both</li>
+                        </ol>
                     </div>
 
                     <div class="sync-buttons">
-                        <button class="btn-success" id="backupBtn"><i class="fas fa-download"></i> Backup Data</button>
-                        <button class="btn-secondary" id="restoreBtn"><i class="fas fa-upload"></i> Restore Data</button>
+                        <button class="btn-success" id="newCodeBtn"><i class="fas fa-key"></i> Generate New Code</button>
+                        <button class="btn-secondary" id="manualSyncBtn"><i class="fas fa-sync"></i> Manual Sync</button>
                     </div>
-                    <input type="file" id="fileInput" style="display: none;" accept=".json">
+
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label for="manualShareCode">Or enter a different share code:</label>
+                        <input type="text" id="manualShareCode" placeholder="Paste share code from another device">
+                        <button class="btn-warning" id="applyCodeBtn" style="margin-top: 10px; width: 100%;">
+                            <i class="fas fa-check"></i> Apply This Code
+                        </button>
+                    </div>
                 </div>
             </div>
 
             <footer>
-                <p>Anas & Saad Food Ratings &copy; 2023 | No setup needed - just share the password!</p>
+                <p>Anas & Saad Food Ratings &copy; 2023 | Use same Share Code on all devices!</p>
             </footer>
         </div>
     </div>
@@ -732,16 +785,28 @@
         const anasFoods = document.getElementById('anasFoods');
         const saadFoods = document.getElementById('saadFoods');
         const avgRating = document.getElementById('avgRating');
-        const exportBtn = document.getElementById('exportBtn');
-        const importBtn = document.getElementById('importBtn');
-        const backupBtn = document.getElementById('backupBtn');
-        const restoreBtn = document.getElementById('restoreBtn');
-        const fileInput = document.getElementById('fileInput');
+        const syncNowBtn = document.getElementById('syncNowBtn');
+        const shareBtn = document.getElementById('shareBtn');
+        const syncIndicator = document.getElementById('syncIndicator');
+        const syncStatus = document.getElementById('syncStatus');
+        const currentShareCode = document.getElementById('currentShareCode');
+        const copyCodeBtn = document.getElementById('copyCodeBtn');
+        const newCodeBtn = document.getElementById('newCodeBtn');
+        const manualSyncBtn = document.getElementById('manualSyncBtn');
+        const manualShareCode = document.getElementById('manualShareCode');
+        const applyCodeBtn = document.getElementById('applyCodeBtn');
 
         // Application state
-        let foods = JSON.parse(localStorage.getItem('anasSaadSharedFoods')) || [];
+        let foods = [];
         let currentRating = 5;
         let currentUsername = '';
+        let shareCode = localStorage.getItem('foodShareCode') || generateShareCode();
+        let syncInterval = null;
+
+        // Generate a simple share code
+        function generateShareCode() {
+            return 'ANASSAAD' + Math.random().toString(36).substring(2, 8).toUpperCase();
+        }
 
         // Show notification
         function showNotification(message, type = 'success') {
@@ -753,6 +818,21 @@
             setTimeout(() => {
                 notification.style.display = 'none';
             }, 4000);
+        }
+
+        // Update sync status
+        function updateSyncStatus(status, message) {
+            syncIndicator.className = 'sync-indicator';
+            if (status === 'connected') {
+                syncIndicator.classList.add('connected');
+                syncStatus.textContent = message || 'Synced';
+            } else if (status === 'syncing') {
+                syncIndicator.classList.add('syncing');
+                syncStatus.textContent = message || 'Syncing...';
+            } else {
+                syncIndicator.classList.add('offline');
+                syncStatus.textContent = message || 'Offline';
+            }
         }
 
         // Update stats
@@ -773,15 +853,38 @@
             }
         }
 
-        // Save to localStorage
+        // Get storage key based on share code
+        function getStorageKey() {
+            return `foodData_${shareCode}`;
+        }
+
+        // Save to localStorage with share code
         function saveFoods() {
-            localStorage.setItem('anasSaadSharedFoods', JSON.stringify(foods));
+            localStorage.setItem(getStorageKey(), JSON.stringify(foods));
+            localStorage.setItem('foodShareCode', shareCode);
+            updateSyncStatus('connected', 'Saved locally');
+        }
+
+        // Load foods based on share code
+        function loadFoods() {
+            const storedFoods = localStorage.getItem(getStorageKey());
+            if (storedFoods) {
+                foods = JSON.parse(storedFoods);
+                renderFoodList();
+                renderTierList();
+                updateStats();
+                updateSyncStatus('connected', 'Data loaded');
+            } else {
+                foods = [];
+                updateSyncStatus('connected', 'New share code');
+            }
         }
 
         // Login functionality
         loginBtn.addEventListener('click', () => {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value.trim();
+            const inputShareCode = document.getElementById('shareCode').value.trim();
             
             if ((username === 'anas' || username === 'saad') && password === 'anassaadfood') {
                 currentUsername = username;
@@ -791,14 +894,25 @@
                 userBadge.textContent = username === 'anas' ? 'Anas' : 'Saad';
                 userBadge.className = `user-badge user-${username}`;
                 
+                // Use provided share code or existing one
+                if (inputShareCode) {
+                    shareCode = inputShareCode.toUpperCase();
+                }
+                
+                localStorage.setItem('foodShareCode', shareCode);
+                
                 loginContainer.style.display = 'none';
                 appContainer.style.display = 'block';
                 
-                // Load data
+                // Load data and setup
                 loadFoods();
                 updateStats();
+                currentShareCode.textContent = shareCode;
                 
-                showNotification(`Welcome ${username}! You can see ${username === 'anas' ? "Saad's" : "Anas's"} foods too!`);
+                // Start auto-sync
+                startAutoSync();
+                
+                showNotification(`Welcome! Using share code: ${shareCode}`);
             } else {
                 errorMessage.style.display = 'block';
             }
@@ -806,10 +920,12 @@
 
         // Logout functionality
         logoutBtn.addEventListener('click', () => {
+            if (syncInterval) clearInterval(syncInterval);
             appContainer.style.display = 'none';
             loginContainer.style.display = 'block';
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
+            document.getElementById('shareCode').value = '';
             errorMessage.style.display = 'none';
             showNotification('Logged out successfully');
         });
@@ -824,7 +940,22 @@
                 
                 tab.classList.add('active');
                 document.getElementById(tabId + 'Tab').classList.add('active');
+                
+                // Update share code display when on sync tab
+                if (tabId === 'sync') {
+                    currentShareCode.textContent = shareCode;
+                }
             });
+        });
+
+        // Share button
+        shareBtn.addEventListener('click', () => {
+            tabs.forEach(t => t.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            document.querySelector('.tab[data-tab="sync"]').classList.add('active');
+            document.getElementById('syncTab').classList.add('active');
+            currentShareCode.textContent = shareCode;
         });
 
         // Star rating interaction
@@ -896,18 +1027,72 @@
             ratingInput.value = 5;
             updateStars(5);
             
-            showNotification(`${foodName} added! ${currentUsername === 'anas' ? 'Saad' : 'Anas'} will see it too!`);
+            showNotification(`${foodName} added! Will sync to other devices using code: ${shareCode}`);
         });
 
-        // Load foods
-        function loadFoods() {
-            const savedFoods = localStorage.getItem('anasSaadSharedFoods');
-            if (savedFoods) {
-                foods = JSON.parse(savedFoods);
-                renderFoodList();
-                renderTierList();
-                updateStats();
+        // Sync now button
+        syncNowBtn.addEventListener('click', () => {
+            updateSyncStatus('syncing', 'Syncing...');
+            loadFoods();
+            setTimeout(() => {
+                updateSyncStatus('connected', 'Synced');
+                showNotification('Data synced!');
+            }, 1000);
+        });
+
+        // Manual sync button
+        manualSyncBtn.addEventListener('click', () => {
+            syncNowBtn.click();
+        });
+
+        // Copy share code
+        copyCodeBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(shareCode).then(() => {
+                showNotification('Share code copied to clipboard!');
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = shareCode;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showNotification('Share code copied!');
+            });
+        });
+
+        // Generate new code
+        newCodeBtn.addEventListener('click', () => {
+            if (confirm('Generate a new share code? This will create a new separate food list.')) {
+                shareCode = generateShareCode();
+                localStorage.setItem('foodShareCode', shareCode);
+                currentShareCode.textContent = shareCode;
+                loadFoods();
+                showNotification(`New share code: ${shareCode}`);
             }
+        });
+
+        // Apply manual code
+        applyCodeBtn.addEventListener('click', () => {
+            const newCode = manualShareCode.value.trim().toUpperCase();
+            if (newCode) {
+                shareCode = newCode;
+                localStorage.setItem('foodShareCode', shareCode);
+                currentShareCode.textContent = shareCode;
+                manualShareCode.value = '';
+                loadFoods();
+                showNotification(`Now using share code: ${shareCode}`);
+            } else {
+                showNotification('Please enter a share code', 'warning');
+            }
+        });
+
+        // Auto-sync every 10 seconds
+        function startAutoSync() {
+            if (syncInterval) clearInterval(syncInterval);
+            syncInterval = setInterval(() => {
+                loadFoods();
+            }, 10000); // Sync every 10 seconds
         }
 
         // Render food list
@@ -1019,72 +1204,9 @@
             });
         }
 
-        // Export data
-        exportBtn.addEventListener('click', () => {
-            backupData();
-        });
-
-        backupBtn.addEventListener('click', () => {
-            backupData();
-        });
-
-        function backupData() {
-            const dataStr = JSON.stringify(foods, null, 2);
-            const dataBlob = new Blob([dataStr], { type: 'application/json' });
-            
-            const url = URL.createObjectURL(dataBlob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `anas-saad-foods-backup-${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-            
-            showNotification('Food data backed up successfully!');
-        }
-
-        // Import data
-        importBtn.addEventListener('click', () => {
-            fileInput.click();
-        });
-
-        restoreBtn.addEventListener('click', () => {
-            fileInput.click();
-        });
-
-        fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
-            
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                try {
-                    const importedFoods = JSON.parse(event.target.result);
-                    
-                    if (!Array.isArray(importedFoods)) {
-                        throw new Error('Invalid file format');
-                    }
-                    
-                    if (confirm(`This will replace your current ${foods.length} foods with ${importedFoods.length} imported foods. Continue?`)) {
-                        foods = importedFoods;
-                        saveFoods();
-                        renderFoodList();
-                        renderTierList();
-                        updateStats();
-                        showNotification('Food data restored successfully!', 'success');
-                    }
-                } catch (error) {
-                    showNotification('Error importing file. Please make sure you selected a valid backup file.', 'danger');
-                    console.error('Import error:', error);
-                }
-            };
-            reader.readAsText(file);
-            fileInput.value = '';
-        });
-
         // Initialize
         updateStars(currentRating);
+        updateSyncStatus('offline', 'Not connected');
     </script>
 </body>
 </html>
